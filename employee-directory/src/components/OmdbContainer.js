@@ -9,18 +9,19 @@ import API from "../utils/API";
 
 class OmdbContainer extends Component {
   state = {
-    result: {},
+    employees: [],
     search: ""
   };
 
   // When this component mounts, search for the movie "The Matrix"
   componentDidMount() {
-    this.searchMovies("The Matrix");
+    this.searchMovies();
   }
 
-  searchMovies = query => {
-    API.search(query)
-      .then(res => this.setState({ result: res.data }))
+  searchMovies = () => {
+    API.search()
+      .then(res => this.setState({ employees: res.data.results }))
+      // .then(res => console.log(res))
       .catch(err => console.log(err));
   };
 
@@ -38,25 +39,40 @@ class OmdbContainer extends Component {
     this.searchMovies(this.state.search);
   };
 
+  handleClick = event => {
+    console.log("clicked")
+  }
+
   render() {
+
+    console.log('state',this.state)
     return (
       <Container>
         <Row>
           <Col size="md-8">
             <Card
-              heading={this.state.result.Title || "Search for a Movie to Begin"}
+              heading={"Employee List"}
             >
-              {this.state.result.Title ? (
-                <MovieDetail
-                  title={this.state.result.Title}
-                  src={this.state.result.Poster}
-                  director={this.state.result.Director}
-                  genre={this.state.result.Genre}
-                  released={this.state.result.Released}
-                />
-              ) : (
-                <h3>No Results to Display</h3>
-              )}
+         <table>
+           <thead>
+           <tr>
+    <th onClick={this.handleClick}>First Name</th>
+    <th>Last Name</th>
+    <th>Email</th>
+  </tr>
+     </thead>
+
+<tbody>
+{this.state.employees.map((employee, index) => (
+      <tr key={index}>
+      <td>{employee.name.first} </td>
+      <td>{employee.name.last}</td>
+      <td>{employee.email}</td>
+      </tr>
+        ))}
+
+</tbody>
+</table>
             </Card>
           </Col>
           <Col size="md-4">
